@@ -1,0 +1,47 @@
+# Secrets: never commit real values (only .env.example with names)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Personal data: CVs, dumps, local data (CLAUDE.md §6, §10)
+*.pdf
+*.docx
+*.doc
+*.odt
+*.dump
+*.sql.gz
+*.sqlite
+*.sqlite3
+data/private/
+data/raw/
+data/*.csv
+cv/
+cvs/
+uploads/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+*.log
