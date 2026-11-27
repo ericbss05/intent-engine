@@ -1,0 +1,43 @@
+[project]
+name = "stage-finder-api"
+version = "0.1.0"
+description = "Backend FastAPI de stage-finder (aide à la recherche de stage/alternance)"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.165.0",
+    "pydantic-settings>=2.16.3",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.29.0",
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "ruff>=0.17.6",
+]
+
+# Application (pas une librairie) : uv ne construit pas de paquet.
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+# E/F: erreurs de base, I: tri des imports, B: bugs probables, UP: syntaxe moderne,
+# S: failles de sécurité courantes (bandit), T20: pas de print() (on utilise le logging)
+select = ["E", "F", "I", "B", "UP", "S", "T20"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]  # assert est normal dans les tests
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
