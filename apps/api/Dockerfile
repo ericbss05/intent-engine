@@ -13,6 +13,8 @@ RUN uv sync --frozen --no-dev --no-install-project
 
 # 2) Code ensuite.
 COPY app ./app
+COPY alembic ./alembic
+COPY alembic.ini ./
 
 # Utilisateur non-root : si le service est compromis, il a peu de droits.
 RUN useradd --system --uid 10001 appuser

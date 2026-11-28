@@ -5,16 +5,21 @@ from collections.abc import Awaitable, Callable
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.config import get_settings
+from app.adapters.clerk import ClerkIdentityProvider
+from app.core.config import Settings, get_settings
+from app.core.db import init_db
+from app.core.errors import register_error_handlers
 from app.core.logging import configure_logging
-from app.routers import health
+from app.core.security import JwksKeyProvider, TokenVerifier
+from app.routers import admin, health, me, webhooks
 
 logger = logging.getLogger("app.request")
 
 
-def create_app() -> FastAPI:
-    settings = get_settings()
+def create_app(settings: Settings | None = None) -> FastAPI:
+    settings = settings or get_settings()
     configure_logging(settings.log_level)
+    init_db(settings)
 
     # Pas de documentation interactive publique en production.
     docs_enabled = settings.app_env != "production"
@@ -30,7 +35,7 @@ def create_app() -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.allowed_origins,
-        allow_methods=["GET"],
+        allow_methods=["GET", "POST", "DELETE"],
         allow_headers=["Authorization", "Content-Type"],
     )
 
@@ -51,7 +56,26 @@ def create_app() -> FastAPI:
         )
         return response
 
+    register_error_handlers(app)
+
+    # Services externes, accrochés à l'application (remplaçables par des faux dans les tests).
+    if settings.clerk_jwt_issuer:
+        app.state.token_verifier = TokenVerifier(
+            issuer=settings.clerk_jwt_issuer,
+            authorized_parties=settings.allowed_origins,
+            key_provider=JwksKeyProvider(settings.clerk_jwt_issuer),
+        )
+    if settings.clerk_webhook_secret:
+        app.state.clerk_webhook_secret = settings.clerk_webhook_secret.get_secret_value()
+    if settings.clerk_secret_key:
+        app.state.identity_provider = ClerkIdentityProvider(
+            settings.clerk_secret_key.get_secret_value()
+        )
+
     app.include_router(health.router)
+    app.include_router(me.router)
+    app.include_router(admin.router)
+    app.include_router(webhooks.router)
     return app
 
 

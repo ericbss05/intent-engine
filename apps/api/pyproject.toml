@@ -4,8 +4,12 @@ version = "0.1.0"
 description = "Backend FastAPI de stage-finder (aide à la recherche de stage/alternance)"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "alembic>=1.20.1",
     "fastapi>=0.165.0",
+    "psycopg[binary]>=3.3.9",
+    "pyjwt[crypto]>=2.15.1",
     "pydantic-settings>=2.16.3",
+    "sqlalchemy>=2.1.9",
     "uvicorn[standard]>=0.54.0",
 ]
 
@@ -31,8 +35,12 @@ target-version = "py312"
 # S: failles de sécurité courantes (bandit), T20: pas de print() (on utilise le logging)
 select = ["E", "F", "I", "B", "UP", "S", "T20"]
 
+[tool.ruff.lint.flake8-bugbear]
+# « param = Depends(...) » est l'écriture normale de FastAPI, pas un piège de valeur par défaut.
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query"]
+
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101"]  # assert est normal dans les tests
+"tests/*" = ["S101", "S105", "S106"]  # assert et faux secrets sont normaux dans les tests
 
 [tool.mypy]
 strict = true
@@ -42,3 +50,6 @@ plugins = ["pydantic.mypy"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+markers = [
+    "integration: needs a real external service/key; skipped when the key is absent",
+]

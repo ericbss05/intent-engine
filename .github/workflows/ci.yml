@@ -1,5 +1,5 @@
 # CI : lint + types + tests des deux applications (CLAUDE.md §9).
-# Pas de base de données en partie 0 : le service PostgreSQL sera ajouté en partie 1.
+# L'API est testée contre un PostgreSQL jetable (service ci-dessous), jamais une vraie base.
 name: ci
 
 on:
@@ -34,9 +34,25 @@ jobs:
       - run: pnpm build
         env:
           NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+          # Fausse clé de forme valide (base64 de « example.clerk.accounts.dev$ ») : le build
+          # a besoin d'une clé bien formée, mais n'appelle jamais Clerk.
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ZXhhbXBsZS5jbGVyay5hY2NvdW50cy5kZXYk
 
   api:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: stagefinder_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     defaults:
       run:
         working-directory: apps/api
