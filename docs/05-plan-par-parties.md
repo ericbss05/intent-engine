@@ -72,7 +72,7 @@ Option à instruire en parallèle (partie 6b) : **offres réelles** via sources 
 
 ---
 
-## Partie 0 — Fondations du dépôt, front + backend (5 j)
+## Partie 0 — Fondations du dépôt, front + backend (5 j) — statut : terminée côté code, en attente de validation (déploiement à faire à la main)
 **Objectif** : dépôt propre, deux applications déployées, CI verte.
 **Technos** : un seul dépôt (« monorepo ») avec `apps/web` (Next.js + TypeScript strict, Tailwind, shadcn/ui, pnpm, ESLint/Prettier, Vitest) et `apps/api` (Python 3.12, FastAPI, uv pour les dépendances, ruff pour le style, pytest, Docker) ; GitHub Actions ; Vercel pour le front ; hébergeur **UE** pour le backend (Scaleway, OVHcloud, Render EU ou Fly Paris : à comparer) ; variables d'environnement validées (Zod côté front, Pydantic côté backend) ; scan de secrets GitHub ; CORS et clé d'API entre front et backend.
 **Livrables** : dépôt, déploiement du front et du backend, CI (lint + tests des deux), `docs/adr/` (une page par décision), README initial.
