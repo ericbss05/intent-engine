@@ -21,6 +21,12 @@ Monorepo `apps/web` (Next.js) + `apps/api` (FastAPI), CI, Dockerfile, README, AD
 | `.env.example` à la racine (copie complétée du template) | — | Demandé par la tâche 7 |
 | `/docs` FastAPI désactivé en production | Toujours actif | Réduit la surface exposée |
 
+## Décisions complémentaires (2026-11-28, validées par l'utilisateur)
+| Décision | Raison |
+|---|---|
+| `httpx2` 2.16.2 ajouté **au groupe `dev` du backend uniquement** (pas en dépendance d'exécution) | Starlette recommande `httpx2` pour son `TestClient` ; l'utilisateur a vérifié l'éditeur (Pydantic Services, Tom Christie, `github.com/pydantic/httpx2`) ; nom exact confirmé sur PyPI ; version figée dans `uv.lock`. Paquets transitifs apportés : `httpcore2`, `truststore` (dev aussi). L'avertissement pytest a disparu ; ruff, mypy, pytest, `uv audit` OK. |
+| `shadcn` conservé | `globals.css` importe `shadcn/tailwind.css`. Sa dépendance transitive `cn@0.2.6` est publiée par le mainteneur de shadcn (`shadcn-ui/cn`), vérifiée avec `pnpm why` et `npm view`. |
+
 ## Comment tester à la main
 1. `cd apps/api && uv sync && uv run uvicorn app.main:app --port 8000` puis `curl localhost:8000/health`.
 2. `cd apps/web && pnpm install`, créer `.env.local` avec `NEXT_PUBLIC_API_BASE_URL=http://localhost:8000`, `pnpm dev`, ouvrir http://localhost:3000 : « OK ». Arrêter l'API : « Service indisponible ».
@@ -30,7 +36,7 @@ Monorepo `apps/web` (Next.js) + `apps/api` (FastAPI), CI, Dockerfile, README, AD
 - API : `/health`, CORS (origine autorisée / refusée), refus de `*`, niveau de log invalide, logs sans champ personnel. Résultat local : ruff, format, mypy, pytest 8/8.
 - Web : `fetchBackendState` (4 cas), `parseEnv`, composant `BackendStatus`. Résultat : eslint + prettier, tsc, vitest 8/8, `next build`.
 - Preuves : exécution depuis un clone propre ; Chrome headless a lu `data-status="ok"` ; image Docker testée (`/health` OK, `/docs` = 404, utilisateur `appuser`).
-- **CI GitHub non exécutée à ce stade** (correction : un remote `origin` existe) ; elle reprend les mêmes commandes.
+- La CI GitHub reprend les mêmes commandes. Correction : j'avais écrit à tort qu'il n'y avait pas de dépôt distant ; un remote `origin` existe et la branche est poussée.
 
 ## Règles RGPD / sécurité touchées
 - §6.5 logs sans donnée personnelle : liste blanche de champs + test ; chemin sans query string.
@@ -42,7 +48,7 @@ Monorepo `apps/web` (Next.js) + `apps/api` (FastAPI), CI, Dockerfile, README, AD
 - ADR 0008 : tarifs et régions issus de recherches web, non vérifiés dans les consoles ; région UE de Render et prix Fly `cdg` non confirmés.
 - **Clé/jeton d'API prévu pour la suite** : seulement la structure (en-tête `Authorization` autorisé par le CORS) ; pas d'auth.
 - Incidents d'outillage : `create-next-app` et `shadcn` échouaient (`ENOEXEC` en lançant `pnpm`) ; contourné par un wrapper temporaire hors dépôt. `shadcn` avait ajouté `cn` comme dépendance directe : **retirée** de `package.json`, et `cn()` réécrit avec `clsx` + `tailwind-merge`. *Correction (2026-11-28)* : `cn@0.2.6` reste dans `pnpm-lock.yaml` comme dépendance **transitive** de la CLI `shadcn@4.23.1` ; il est publié par le mainteneur de shadcn (dépôt `shadcn-ui/cn`), donc ce n'est pas un paquet inconnu, contrairement à ce que j'avais écrit.
-- `httpx2` (suggéré par un avertissement de dépréciation de Starlette) : l'ajout a été **refusé par le garde-fou de l'environnement**, donc non ajouté ; 1 avertissement subsiste dans pytest. Aucun impact fonctionnel.
+- `httpx2` : l'avertissement de dépréciation de Starlette est résolu (voir décisions du 2026-11-28).
 - Le dépôt n'était pas un dépôt git : `git init`, le pack importé sur `main` en un commit local, puis branche de travail.
 - Python système 3.14 sans importance : uv utilise 3.12.
 
