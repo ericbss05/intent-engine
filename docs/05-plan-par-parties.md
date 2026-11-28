@@ -79,7 +79,7 @@ Option à instruire en parallèle (partie 6b) : **offres réelles** via sources 
 **Terminé quand** : un push sur `main` lance les tests des deux applications puis les déploie, et le front appelle un point de santé du backend.
 **À valider ensemble** : nom du dépôt, structure des dossiers, hébergeur du backend, plan Vercel (usage non commercial ?).
 
-## Partie 1 — Compte, base, isolation, droits (4 j)
+## Partie 1 — Compte, base, isolation, droits (4 j) — statut : terminée côté code, en attente de validation (clés Clerk/Neon à brancher à la main : voir `docs/reports/part-01.md`)
 **Objectif** : un utilisateur crée un compte et ne voit que ses données.
 **Technos** : Clerk (rôle admin ; le backend vérifie le jeton de connexion), Neon (région Frankfurt), SQLAlchemy 2 + Alembic (tables `user_profile`, `consents`), couche d'accès aux données exigeant `user_id`, test d'isolation.
 **Livrables** : webhook Clerk, **bouton « Supprimer mon compte »** (cascade) et **« Exporter mes données » (JSON)**, page admin protégée.

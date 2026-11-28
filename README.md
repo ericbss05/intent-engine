@@ -34,9 +34,20 @@ pnpm dev
 
 Ouvre http://localhost:3000 : « État du service : **OK** ». Si le backend est arrêté : « Service indisponible ».
 
-Variables : voir `.env.example` (noms seulement). Le backend a des valeurs par défaut de développement ; copie `.env.example` en `apps/api/.env` pour les changer.
+Variables : voir `.env.example` (noms seulement). **Depuis la partie 1**, le backend exige `DATABASE_URL` et les variables `CLERK_*` (sauf `APP_ENV=test`) et refuse de démarrer sinon. Copie `.env.example` en `apps/api/.env` et remplis-le ; le front lit `apps/web/.env.local` (`NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`).
+
+Migrations de la base : `cd apps/api && uv run alembic upgrade head` (utilise `DATABASE_URL_DIRECT` s'il est défini).
+
+Test de fumée avec tes vraies clés : voir l'en-tête de `scripts/smoke_test.py`.
 
 ## Tests et qualité
+
+Les tests du backend ont besoin d'un PostgreSQL **jetable** (jamais une vraie base ; le nom doit finir par `_test`) :
+
+```bash
+docker run -d --name stagefinder-test-pg -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=stagefinder_test -p 5433:5432 postgres:16-alpine
+```
 
 ```bash
 cd apps/api && uv run ruff check . && uv run ruff format --check . && uv run mypy . && uv run pytest -q
