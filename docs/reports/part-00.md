@@ -30,7 +30,7 @@ Monorepo `apps/web` (Next.js) + `apps/api` (FastAPI), CI, Dockerfile, README, AD
 - API : `/health`, CORS (origine autorisée / refusée), refus de `*`, niveau de log invalide, logs sans champ personnel. Résultat local : ruff, format, mypy, pytest 8/8.
 - Web : `fetchBackendState` (4 cas), `parseEnv`, composant `BackendStatus`. Résultat : eslint + prettier, tsc, vitest 8/8, `next build`.
 - Preuves : exécution depuis un clone propre ; Chrome headless a lu `data-status="ok"` ; image Docker testée (`/health` OK, `/docs` = 404, utilisateur `appuser`).
-- **CI GitHub non exécutée** : pas de dépôt distant ; elle reprend les mêmes commandes.
+- **CI GitHub non exécutée à ce stade** (correction : un remote `origin` existe) ; elle reprend les mêmes commandes.
 
 ## Règles RGPD / sécurité touchées
 - §6.5 logs sans donnée personnelle : liste blanche de champs + test ; chemin sans query string.
@@ -41,7 +41,7 @@ Monorepo `apps/web` (Next.js) + `apps/api` (FastAPI), CI, Dockerfile, README, AD
 - **Déploiement non fait** : le critère « front déployé appelle le backend déployé en UE » reste à réaliser (voir liste ci-dessous).
 - ADR 0008 : tarifs et régions issus de recherches web, non vérifiés dans les consoles ; région UE de Render et prix Fly `cdg` non confirmés.
 - **Clé/jeton d'API prévu pour la suite** : seulement la structure (en-tête `Authorization` autorisé par le CORS) ; pas d'auth.
-- Incidents d'outillage : `create-next-app` et `shadcn` échouaient (`ENOEXEC` en lançant `pnpm`) ; contourné par un wrapper temporaire hors dépôt. `shadcn` avait ajouté un paquet tiers `cn` : **retiré**, `cn()` réécrit avec `clsx` + `tailwind-merge`.
+- Incidents d'outillage : `create-next-app` et `shadcn` échouaient (`ENOEXEC` en lançant `pnpm`) ; contourné par un wrapper temporaire hors dépôt. `shadcn` avait ajouté `cn` comme dépendance directe : **retirée** de `package.json`, et `cn()` réécrit avec `clsx` + `tailwind-merge`. *Correction (2026-11-28)* : `cn@0.2.6` reste dans `pnpm-lock.yaml` comme dépendance **transitive** de la CLI `shadcn@4.23.1` ; il est publié par le mainteneur de shadcn (dépôt `shadcn-ui/cn`), donc ce n'est pas un paquet inconnu, contrairement à ce que j'avais écrit.
 - `httpx2` (suggéré par un avertissement de dépréciation de Starlette) : l'ajout a été **refusé par le garde-fou de l'environnement**, donc non ajouté ; 1 avertissement subsiste dans pytest. Aucun impact fonctionnel.
 - Le dépôt n'était pas un dépôt git : `git init`, le pack importé sur `main` en un commit local, puis branche de travail.
 - Python système 3.14 sans importance : uv utilise 3.12.
@@ -64,7 +64,7 @@ Déploiement automatique après CI ; clé d'API entre front et backend ; Sentry 
 5. **Lockfiles** (`uv.lock`, `pnpm-lock.yaml`) + `--frozen` : builds reproductibles.
 6. **Docker** : couche de dépendances séparée (cache), utilisateur non-root, port via `$PORT`.
 7. **Choix de l'hébergeur** : critères (juridiction, coût, simplicité), et honnêteté sur ce qui n'est pas vérifié.
-8. **Chaîne d'approvisionnement** : le paquet `cn` ajouté par un outil a été détecté et retiré.
+8. **Chaîne d'approvisionnement** : un outil peut ajouter des dépendances sans te le dire ; on relit `package.json`, on vérifie l'origine (`pnpm why`, `npm view`) et on lance `pnpm audit` / `uv audit` (aucune alerte au 2026-11-28).
 
 ## Validation attendue
 Relire l'ADR 0008 (choix de l'hébergeur), tester le lancement local, puis valider avant la partie 1.
