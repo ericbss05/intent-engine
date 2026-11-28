@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { parseEnv } from "@/lib/env";
+import { call, toFailure, type ApiResult, type Fetch } from "@/lib/http";
 
 // Forme de GET /me. Toute autre réponse est traitée comme une erreur, pas comme un crash.
 const meSchema = z.object({
@@ -11,45 +11,7 @@ const meSchema = z.object({
 });
 export type Me = z.infer<typeof meSchema>;
 
-const errorSchema = z.object({ code: z.string() });
-
-export type ApiResult<T> = { ok: true; data: T } | { ok: false; status: number; code: string };
-
-type Fetch = typeof fetch;
-
-function apiBaseUrl(): string {
-  return parseEnv({ NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL }).apiBaseUrl;
-}
-
-async function call(
-  path: string,
-  token: string,
-  init: RequestInit = {},
-  fetchImpl: Fetch = fetch,
-): Promise<Response | { networkError: true }> {
-  try {
-    return await fetchImpl(`${apiBaseUrl()}${path}`, {
-      ...init,
-      cache: "no-store",
-      // Le jeton Clerk prouve l'identité ; le backend le vérifie à chaque requête.
-      headers: { ...init.headers, Authorization: `Bearer ${token}` },
-    });
-  } catch {
-    return { networkError: true };
-  }
-}
-
-async function toFailure(response: Response | { networkError: true }) {
-  if ("networkError" in response) return { ok: false as const, status: 0, code: "network_error" };
-  let code = `http_${response.status}`;
-  try {
-    const parsed = errorSchema.safeParse(await response.json());
-    if (parsed.success) code = parsed.data.code;
-  } catch {
-    // corps vide ou non JSON : on garde le code générique
-  }
-  return { ok: false as const, status: response.status, code };
-}
+export type { ApiResult };
 
 export async function getMe(token: string, fetchImpl?: Fetch): Promise<ApiResult<Me>> {
   const response = await call("/me", token, {}, fetchImpl);

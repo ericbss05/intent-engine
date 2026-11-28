@@ -112,11 +112,22 @@ def main() -> int:
         status, _ = http("POST", f"{api.rstrip('/')}/webhooks/clerk", {"content-type": "application/json"}, b"{}")
         check("Webhook sans signature refusé", status == 400, f"HTTP {status}")
 
+        for path in ("/reference/sectors", "/reference/consent-texts"):
+            status, _ = http("GET", f"{api.rstrip('/')}{path}")
+            check(f"Données de référence publiques {path}", status == 200, f"HTTP {status}")
+
         token = __import__("os").environ.get("SMOKE_SESSION_TOKEN")
         if token:
             auth = {"Authorization": f"Bearer {token}"}
             status, _ = http("GET", f"{api.rstrip('/')}/me", auth)
             check("Jeton de session réel accepté (GET /me)", status in (200, 404), f"HTTP {status} (404 = pas encore de profil)")
+            for path in ("/me/preferences", "/me/consents"):
+                status, _ = http("GET", f"{api.rstrip('/')}{path}", auth)
+                check(
+                    f"Route protégée {path} répond (200/404, ou 403 si 18+ non confirmé)",
+                    status in (200, 403, 404),
+                    f"HTTP {status}",
+                )
             status, _ = http("GET", f"{api.rstrip('/')}/admin/status", auth)
             check("Rôle admin (GET /admin/status)", status in (200, 403), f"HTTP {status} (200 = admin, 403 = non admin)")
     else:

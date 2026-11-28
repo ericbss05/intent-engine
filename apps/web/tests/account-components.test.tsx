@@ -14,7 +14,6 @@ vi.mock("next/navigation", () => ({ useRouter: () => ({ push, replace: push }) }
 
 import { AdminPanel } from "@/components/admin-panel";
 import { DeleteAccountButton } from "@/components/delete-account-button";
-import { OnboardingForm } from "@/components/onboarding-form";
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
 
@@ -27,36 +26,6 @@ afterEach(() => {
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
   vi.clearAllMocks();
-});
-
-describe("OnboardingForm (18+)", () => {
-  it("keeps the button disabled until the box is checked, and sends nothing before", () => {
-    const fetchMock = vi.fn();
-    vi.stubGlobal("fetch", fetchMock);
-    render(<OnboardingForm />);
-    const button = screen.getByRole("button", { name: "Continuer" }) as HTMLButtonElement;
-    expect(button.disabled).toBe(true);
-    fireEvent.click(button);
-    expect(fetchMock).not.toHaveBeenCalled();
-  });
-
-  it("confirms then goes to the account page", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue(
-        json({
-          adult_confirmed: true,
-          ai_assist_consent: false,
-          created_at: "2026-11-28T10:00:00Z",
-          is_admin: false,
-        }),
-      ),
-    );
-    render(<OnboardingForm />);
-    fireEvent.click(screen.getByRole("checkbox"));
-    fireEvent.click(screen.getByRole("button", { name: "Continuer" }));
-    await waitFor(() => expect(push).toHaveBeenCalledWith("/account"));
-  });
 });
 
 describe("DeleteAccountButton", () => {

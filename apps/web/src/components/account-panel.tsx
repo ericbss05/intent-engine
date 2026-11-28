@@ -4,6 +4,9 @@ import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import Link from "next/link";
+
+import { AiConsentPanel } from "@/components/ai-consent-panel";
 import { DeleteAccountButton } from "@/components/delete-account-button";
 import { Button } from "@/components/ui/button";
 import { exportMyData, getMe, type Me } from "@/lib/account-api";
@@ -64,9 +67,12 @@ export function AccountPanel() {
   return (
     <div className="flex flex-col gap-8">
       <p>
-        Compte actif. Analyse du CV assistée par IA :{" "}
-        <strong>{state.me.ai_assist_consent ? "activée" : "désactivée"}</strong>.
+        Compte actif.{" "}
+        <Link href="/preferences" className="underline">
+          Modifier ma recherche
+        </Link>
       </p>
+      <AiConsentPanel />
       <section className="flex flex-col gap-2">
         <h2 className="text-lg font-medium">Mes données</h2>
         <p className="text-sm text-muted-foreground">
