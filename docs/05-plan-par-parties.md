@@ -86,7 +86,7 @@ Option à instruire en parallèle (partie 6b) : **offres réelles** via sources 
 **Terminé quand** : test d'isolation vert ; suppression de compte testée de bout en bout.
 **À valider** : schéma des tables, méthode de protection admin.
 
-## Partie 2 — Questionnaire et consentements (3 j)
+## Partie 2 — Questionnaire et consentements (3 j) — statut : terminée côté code, en attente de validation (table NAF à relire, textes à relire)
 **Objectif** : l'étudiant décrit sa recherche et donne (ou non) ses accords.
 **Technos** : React Hook Form + Zod, shadcn/ui, table `search_preferences`.
 **Contenu** : contrat et durée, métier, secteurs (→ NAF), zone, taille, entreprises déjà contactées ; mention d'information RGPD ; 18+ ; **choix « analyse du CV assistée par IA » vs « analyse simple »** (consentement séparé, décoché par défaut) ; consentement d'entraînement : **supprimé** (pas de ML dans ce projet).
