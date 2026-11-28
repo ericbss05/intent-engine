@@ -1,0 +1,13 @@
+{
+  "version_note": "Textes provisoires (version simple) : à faire relire par un juriste en partie 14. Les passages [entre crochets] sont à compléter avant tout lancement public.",
+  "privacy_notice": {
+    "version": "2026-11-28-draft1",
+    "title": "Information sur vos données personnelles",
+    "text": "Ce service vous aide à chercher un stage ou une alternance. Voici l'essentiel sur vos données.\n\nQui est responsable ? [Nom et adresse du responsable du traitement — à compléter].\n\nQuelles données ? Votre email et votre identifiant de compte (gérés par notre prestataire d'authentification), vos réponses au questionnaire (contrat, durée, métier, secteurs, zone, taille d'entreprise), et plus tard un profil issu de votre CV que vous aurez validé. Votre fichier CV n'est jamais conservé. Nous ne demandons ni photo, ni date de naissance, ni nationalité, ni situation familiale, ni état de santé, ni adresse exacte, ni téléphone personnel.\n\nPourquoi ? Pour rechercher des entreprises qui correspondent à votre recherche et les classer en vous expliquant pourquoi. Le classement est une aide : c'est vous qui décidez. Nous n'envoyons aucun email ni aucune candidature à votre place.\n\nCombien de temps ? Tant que votre compte existe. Un compte inactif depuis 12 mois est supprimé (après un préavis de 30 jours).\n\nVos droits : accès et export de vos données, effacement du compte, retrait de vos accords, à tout moment, depuis la page « Mon compte ». Pour toute autre demande : [adresse de contact — à compléter]. Vous pouvez aussi saisir la CNIL.\n\nHébergement et prestataires : [liste et pays d'hébergement — à compléter]."
+  },
+  "ai_assist": {
+    "version": "2026-11-28-draft1",
+    "title": "Analyse de votre CV assistée par IA (facultatif)",
+    "text": "Option 1 — Analyse simple (par défaut) : votre CV est lu par des règles, sur nos serveurs, sans service d'IA.\n\nOption 2 — Analyse assistée par IA : le texte de votre CV, après retrait des informations qui vous identifient (nom, email, téléphone, adresse), peut être traité par un service d'IA pour mieux repérer vos compétences. Le fournisseur doit être situé dans l'Union européenne, ne pas conserver les données et ne pas les utiliser pour entraîner ses modèles [conditions à confirmer avant activation]. Votre CV brut n'est jamais envoyé.\n\nCe choix est libre : refuser n'a aucune conséquence sur l'accès au service. Vous pouvez changer d'avis à tout moment depuis « Mon compte ». Aucune décision n'est prise automatiquement à votre place."
+  }
+}

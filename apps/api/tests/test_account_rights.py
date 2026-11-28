@@ -17,7 +17,24 @@ MakeToken = Callable[..., str]
 
 
 def _populate(db: Session, uid: str) -> None:
+    from app.domain.schemas import PreferencesIn
+    from app.services.preferences import save_preferences
+
     user_data.confirm_adult(db, uid)
+    save_preferences(
+        db,
+        uid,
+        PreferencesIn.model_validate(
+            {
+                "contract_type": "stage",
+                "duration_months": 6,
+                "target_role": "Analyste financier",
+                "sectors": ["banque_assurance_finance"],
+                "zone": {"location": "75", "radius_km": 30},
+                "company_size": ["50-249"],
+            }
+        ),
+    )
     user_data.record_consent(db, uid, "privacy_notice", True, "v1")
     user_data.record_consent(db, uid, "ai_assist", False, "v1")
     db.commit()
@@ -36,6 +53,7 @@ def test_export_contains_all_user_tables_and_rows(
     assert set(data["tables"]) == expected_tables
     assert len(data["tables"]["user_profile"]) == 1
     assert len(data["tables"]["consents"]) == 2
+    assert data["tables"]["search_preferences"][0]["target_role"] == "Analyste financier"
     assert data["tables"]["user_profile"][0]["adult_confirmed_at"] is not None
 
 

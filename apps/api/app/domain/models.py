@@ -6,9 +6,20 @@ Toutes les dates sont en UTC.
 """
 
 from datetime import UTC, datetime
-from typing import Literal
+from typing import Any, Literal
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Index, MetaData, String, text
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    MetaData,
+    String,
+    text,
+)
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 # Noms de contraintes prévisibles : nécessaires pour des migrations Alembic propres.
@@ -64,3 +75,29 @@ class Consent(Base):
     granted: Mapped[bool] = mapped_column(Boolean)
     version_text: Mapped[str] = mapped_column(String(32))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class SearchPreferences(Base):
+    """Réponses au questionnaire (une ligne par étudiant, remplacée à chaque sauvegarde)."""
+
+    __tablename__ = "search_preferences"
+    __table_args__ = (
+        CheckConstraint("contract_type in ('stage', 'alternance')", name="contract_type"),
+        CheckConstraint("duration_months between 1 and 36", name="duration_months"),
+    )
+
+    user_id: Mapped[str] = mapped_column(
+        ForeignKey("user_profile.user_id", ondelete="CASCADE"), primary_key=True
+    )
+    contract_type: Mapped[str] = mapped_column(String(16))
+    duration_months: Mapped[int] = mapped_column(Integer)
+    target_role: Mapped[str] = mapped_column(String(100))
+    # Identifiants de secteurs de data/naf_mapping.json (ex. ["informatique_telecoms"]).
+    sectors: Mapped[list[str]] = mapped_column(JSONB)
+    # {"location": "75" ou "75011", "radius_km": 30} : zone grossière, jamais une adresse exacte.
+    zone: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    company_size: Mapped[list[str]] = mapped_column(JSONB)
+    priorities: Mapped[list[str]] = mapped_column(JSONB, server_default=text("'[]'::jsonb"))
+    # SIREN (9 chiffres) d'entreprises déjà contactées : on ne les proposera pas.
+    excluded_sirens: Mapped[list[str]] = mapped_column(JSONB, server_default=text("'[]'::jsonb"))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

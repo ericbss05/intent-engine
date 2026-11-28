@@ -1,0 +1,17 @@
+# Le contexte de build est la RACINE du dépôt (pour pouvoir copier data/) :
+#   docker build -f apps/api/Dockerfile -t stage-finder-api .
+.git
+.github
+docs
+prompts
+templates
+apps/web
+**/node_modules
+**/.venv
+**/.env
+**/.env.*
+**/__pycache__
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+apps/api/tests

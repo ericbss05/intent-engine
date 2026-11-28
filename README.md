@@ -65,7 +65,7 @@ La CI (`.github/workflows/ci.yml`) lance les mêmes commandes sur chaque PR et c
 
 **Backend → hébergeur UE** (proposition : Scaleway, voir `docs/adr/0008-hebergeur-backend.md`, statut « proposé »)
 1. Valide ou change l'hébergeur (ADR 0008).
-2. Construis l'image : `docker build -t stage-finder-api apps/api` et pousse-la dans le registre de l'hébergeur.
+2. Construis l'image : `docker build -f apps/api/Dockerfile -t stage-finder-api .` (depuis la racine du dépôt) et pousse-la dans le registre de l'hébergeur.
 3. Crée le service, région **UE**, port `8080`, variables : `APP_ENV=production`, `API_ALLOWED_ORIGINS=<URL du front Vercel>`, `LOG_LEVEL=info`.
 4. Teste `https://<url-backend>/health`, puis redéploie le front avec la bonne `NEXT_PUBLIC_API_BASE_URL`.
 

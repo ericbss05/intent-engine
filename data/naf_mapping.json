@@ -1,0 +1,185 @@
+{
+  "version": "2026-11-28-draft1",
+  "status": "brouillon : à relire et valider par l'utilisateur avant d'être figé (partie 2)",
+  "note": "Nomenclature NAF rév. 2 (2008). Un code peut être une division (2 chiffres, ex. '62'), un groupe ou une classe (ex. '58.2', '70.21Z') : un établissement correspond à un secteur si son code NAF COMMENCE par l'un de ces codes. À vérifier contre la nomenclature officielle de l'INSEE.",
+  "sectors": [
+    {
+      "id": "informatique_telecoms",
+      "label": "Informatique, numérique et télécoms",
+      "naf": [
+        "58.2",
+        "61",
+        "62",
+        "63.1"
+      ]
+    },
+    {
+      "id": "conseil_gestion",
+      "label": "Conseil et gestion d'entreprise",
+      "naf": [
+        "70.2"
+      ]
+    },
+    {
+      "id": "banque_assurance_finance",
+      "label": "Banque, assurance et finance",
+      "naf": [
+        "64",
+        "65",
+        "66"
+      ]
+    },
+    {
+      "id": "juridique_comptable",
+      "label": "Juridique, comptabilité et audit",
+      "naf": [
+        "69"
+      ]
+    },
+    {
+      "id": "marketing_publicite",
+      "label": "Marketing, publicité et études de marché",
+      "naf": [
+        "73",
+        "70.21Z"
+      ]
+    },
+    {
+      "id": "ingenierie_recherche",
+      "label": "Ingénierie, R&D et architecture",
+      "naf": [
+        "71",
+        "72"
+      ]
+    },
+    {
+      "id": "industrie_mecanique_electrique",
+      "label": "Industrie : métallurgie, mécanique, électronique, électrique",
+      "naf": [
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "33"
+      ]
+    },
+    {
+      "id": "automobile_aeronautique",
+      "label": "Automobile, aéronautique, naval et ferroviaire",
+      "naf": [
+        "29",
+        "30"
+      ]
+    },
+    {
+      "id": "agroalimentaire",
+      "label": "Agroalimentaire",
+      "naf": [
+        "10",
+        "11"
+      ]
+    },
+    {
+      "id": "chimie_pharmacie_cosmetique",
+      "label": "Chimie, pharmacie et cosmétique",
+      "naf": [
+        "20",
+        "21"
+      ]
+    },
+    {
+      "id": "energie_environnement",
+      "label": "Énergie, eau, déchets et environnement",
+      "naf": [
+        "35",
+        "36",
+        "37",
+        "38",
+        "39"
+      ]
+    },
+    {
+      "id": "batiment_immobilier",
+      "label": "Bâtiment, travaux publics et immobilier",
+      "naf": [
+        "41",
+        "42",
+        "43",
+        "68"
+      ]
+    },
+    {
+      "id": "commerce_distribution",
+      "label": "Commerce et distribution",
+      "naf": [
+        "45",
+        "46",
+        "47"
+      ]
+    },
+    {
+      "id": "transport_logistique",
+      "label": "Transport et logistique",
+      "naf": [
+        "49",
+        "50",
+        "51",
+        "52",
+        "53"
+      ]
+    },
+    {
+      "id": "hotellerie_restauration_tourisme",
+      "label": "Hôtellerie, restauration et tourisme",
+      "naf": [
+        "55",
+        "56",
+        "79"
+      ]
+    },
+    {
+      "id": "sante_social",
+      "label": "Santé et action sociale",
+      "naf": [
+        "86",
+        "87",
+        "88"
+      ]
+    },
+    {
+      "id": "medias_culture_edition",
+      "label": "Médias, édition, audiovisuel et culture",
+      "naf": [
+        "58.1",
+        "59",
+        "60",
+        "90",
+        "91"
+      ]
+    },
+    {
+      "id": "education_formation",
+      "label": "Enseignement et formation",
+      "naf": [
+        "85"
+      ]
+    },
+    {
+      "id": "textile_mode_luxe",
+      "label": "Textile, mode et luxe",
+      "naf": [
+        "13",
+        "14",
+        "15"
+      ]
+    },
+    {
+      "id": "sport_loisirs",
+      "label": "Sport et loisirs",
+      "naf": [
+        "93"
+      ]
+    }
+  ]
+}

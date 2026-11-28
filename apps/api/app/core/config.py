@@ -5,6 +5,7 @@ plutôt que de planter plus tard de façon obscure. Aucun secret n'est écrit ic
 """
 
 from functools import lru_cache
+from pathlib import Path
 from typing import Literal
 
 from pydantic import SecretStr, field_validator, model_validator
@@ -20,6 +21,10 @@ class Settings(BaseSettings):
     # Liste d'origines séparées par des virgules (ex: https://mon-site.vercel.app).
     # Jamais "*" : seul notre front a le droit d'appeler l'API depuis un navigateur.
     api_allowed_origins: str = "http://localhost:3000"
+
+    # Dossier des données de référence (naf_mapping.json, consent_texts.json). Par défaut :
+    # le dossier `data/` à la racine du dépôt (en Docker : DATA_DIR=/srv/data).
+    data_dir: Path | None = None
 
     # --- Base de données (Neon, Frankfurt). Voir .env.example pour pooled vs direct.
     database_url: SecretStr | None = None
@@ -72,6 +77,11 @@ class Settings(BaseSettings):
         if missing:
             raise ValueError(f"Missing required environment variables: {', '.join(missing)}")
         return self
+
+    @property
+    def resolved_data_dir(self) -> Path:
+        # config.py -> core -> app -> api -> apps -> <racine du dépôt>
+        return self.data_dir or Path(__file__).resolve().parents[4] / "data"
 
     @property
     def allowed_origins(self) -> list[str]:

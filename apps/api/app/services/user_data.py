@@ -13,12 +13,12 @@ from sqlalchemy import delete, inspect, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import Session
 
-from app.domain.models import Base, Consent, UserProfile, utcnow
+from app.domain.models import Base, Consent, SearchPreferences, UserProfile, utcnow
 
 # Toute table qui contient des données d'un étudiant DOIT figurer ici : elle est alors
 # incluse dans l'export. Un test échoue si une table avec `user_id` est oubliée.
 # Les parties suivantes ajoutent leurs modèles (préférences, profils CV, recherches…).
-USER_OWNED_MODELS: tuple[type[Base], ...] = (UserProfile, Consent)
+USER_OWNED_MODELS: tuple[type[Base], ...] = (UserProfile, Consent, SearchPreferences)
 
 EXPORT_FORMAT_VERSION = 1
 

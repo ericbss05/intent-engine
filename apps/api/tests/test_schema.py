@@ -19,6 +19,18 @@ ALLOWED_COLUMNS: dict[str, set[str]] = {
         "last_active_at",
     },
     "consents": {"id", "user_id", "kind", "granted", "version_text", "created_at"},
+    "search_preferences": {
+        "user_id",
+        "contract_type",
+        "duration_months",
+        "target_role",
+        "sectors",
+        "zone",
+        "company_size",
+        "priorities",
+        "excluded_sirens",
+        "updated_at",
+    },
 }
 
 FORBIDDEN_WORDS = (
@@ -61,4 +73,6 @@ def test_migration_downgrade_and_upgrade_roundtrip(engine: Engine) -> None:
     run_alembic("downgrade", "base")
     assert "user_profile" not in inspect(engine).get_table_names()
     run_alembic("upgrade", "head")
-    assert {"user_profile", "consents"} <= set(inspect(engine).get_table_names())
+    assert {"user_profile", "consents", "search_preferences"} <= set(
+        inspect(engine).get_table_names()
+    )

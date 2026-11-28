@@ -11,7 +11,8 @@ from app.core.db import init_db
 from app.core.errors import register_error_handlers
 from app.core.logging import configure_logging
 from app.core.security import JwksKeyProvider, TokenVerifier
-from app.routers import admin, health, me, webhooks
+from app.domain.reference import load_reference_data
+from app.routers import admin, consents, health, me, preferences, reference, webhooks
 
 logger = logging.getLogger("app.request")
 
@@ -35,7 +36,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.allowed_origins,
-        allow_methods=["GET", "POST", "DELETE"],
+        allow_methods=["GET", "POST", "PUT", "DELETE"],
         allow_headers=["Authorization", "Content-Type"],
     )
 
@@ -58,6 +59,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     register_error_handlers(app)
 
+    # Données de référence validées au démarrage (échec = l'application ne démarre pas).
+    app.state.reference = load_reference_data(settings.resolved_data_dir)
+
     # Services externes, accrochés à l'application (remplaçables par des faux dans les tests).
     if settings.clerk_jwt_issuer:
         app.state.token_verifier = TokenVerifier(
@@ -75,6 +79,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(health.router)
     app.include_router(me.router)
     app.include_router(admin.router)
+    app.include_router(preferences.router)
+    app.include_router(consents.router)
+    app.include_router(reference.router)
     app.include_router(webhooks.router)
     return app
 
